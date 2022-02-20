@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final long START_TIME_IN_MILLIS = 600000;
@@ -45,9 +47,11 @@ public class MainActivity extends AppCompatActivity {
         mButtonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                resetTimer();
             }
         });
+        // We want to set our context from 00:00 to our actual time that is left.
+        updateCountDownText();
     }
 
     private void startTimer() {
@@ -78,8 +82,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateCountDownText() {
+        int minutes = (int) (mTimeLeftInMillis / 1000 / 60);
+        int seconds = (int) (mTimeLeftInMillis / 1000) % 60;
+
+        String timeLeftFormatted = String.format(Locale.getDefault(),"%02d:%02d", minutes,seconds);
+
+        mTextViewCountDown.setText(timeLeftFormatted);
     }
 
     private void pauseTimer() {
+        mCountDownTimer.cancel();
+        mTimerRunning = false;
+        mButtonReset.setText("Start");
+        mButtonReset.setVisibility(View.VISIBLE);
+    }
+
+    private void resetTimer() {
+        mTimeLeftInMillis = START_TIME_IN_MILLIS;
+        updateCountDownText();
+        mButtonReset.setVisibility(View.INVISIBLE);
+        mButtonReset.setVisibility(View.VISIBLE);
     }
 }
